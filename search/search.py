@@ -88,18 +88,9 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     frontier = util.Stack()
-    frontier.push([(problem.getStartState(), "Start", 0)])
-    explored = []
-
-    while not frontier.isEmpty():
-        path = frontier.pop()
-        current_node = path[len(path)-1]
-        current_node = current_node[0]
-        if(problem.isGoalState(current_node)):
-            return #return path to goal
-        elif(current_node not in explored):
-            explored.append(current_node)
-    return
+    frontier.push([problem.getStartState(), "Start", 0])
+    s = DFS_Search()
+    path = s.depthfs(frontier, problem)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -129,3 +120,24 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
+class DFS_Search:
+    def depthfs(self, frontier, problem):
+        final_path = []
+        explored = []
+        while not frontier.isEmpty():
+            path = frontier.pop()
+            temp = path[len(path)-1]
+            current_node = temp[0]
+            if(problem.isGoalState(current_node)):
+                for x in path:
+                    final_path.append(x[1])
+                    return final_path
+            elif(current_node not in explored):
+                explored.append(current_node)
+                for x in problem.getSuccessors(current_node):
+                    if (x not in explored):
+                        frontier.push(x)
+                        self.depthfs(frontier, problem)
+                explored.append(current_node)
+        return []
